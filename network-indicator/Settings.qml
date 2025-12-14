@@ -202,11 +202,7 @@ ColumnLayout {
         description: pluginApi?.tr("settings.useCustomColors.desc")
         checked: root.useCustomColors
         onToggled: function (checked) {
-            if (checked) {
-                root.useCustomColors = true;
-            } else {
-                root.useCustomColors = false;
-            }
+            root.useCustomColors = checked;
         }
     }
 
