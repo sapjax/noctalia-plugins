@@ -68,21 +68,9 @@ Rectangle {
         command: ["bash", root.updateScriptDir + "/update-count.sh"]
         stdout: StdioCollector {
             onStreamFinished: {
-                console.log("UpdateCount: Script path:", root.updateScriptDir + "/update-count.sh");
-                console.log("UpdateCount: Raw output:", text);
-                console.log("UpdateCount: Trimmed output:", text.trim());
                 var count = parseInt(text.trim());
-                console.log("UpdateCount: Parsed count:", count);
                 root.count = isNaN(count) ? 0 : count;
             }
-        }
-        stderr: StdioCollector {
-            onStreamFinished: {
-                console.log("UpdateCount: stderr output:", text);
-            }
-        }
-        onExited: function(exitCode, exitStatus) {
-            console.log("UpdateCount: Process exited with code:", exitCode, "status:", exitStatus);
         }
     }
 
