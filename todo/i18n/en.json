@@ -1,43 +1,15 @@
 {
-  "bar_widget": {
-    "todo_count_plural": "{count} todos",
-    "todo_count_singular": "{count} todo"
-  },
-  "desktop_widget": {
-    "empty_state": "No to-dos",
-    "header_title": "To-Do List",
-    "items_count": "{active} of {total} items"
-  },
-  "main": {
-    "added_new_todo": "Added new todo: ",
-    "cleared_completed_todos": "Cleared ",
-    "completed_todos_suffix": " completed todos",
-    "not_found_suffix": " not found",
-    "removed_todo": "Removed todo item",
-    "todo_completed": "completed",
-    "todo_marked_incomplete": "marked as incomplete",
-    "todo_not_found": "Todo with ID ",
-    "todo_status_changed": "Todo "
-  },
   "panel": {
+    "header": {
+      "title": "Todo List",
+      "clear_completed_button": "Clear Completed"
+    },
     "add_todo": {
-      "add_button": "Add",
-      "placeholder": "Enter a new todo item..."
+      "placeholder": "Enter a new todo item...",
+      "add_button": "Add"
     },
     "empty_state": {
       "message": "No todo items yet"
-    },
-    "header": {
-      "clear_completed_button": "Clear Completed",
-      "title": "Todo List"
-    },
-    "info": {
-      "ipc_commands_label": "IPC Commands:",
-      "ipc_commands_list": "addTodo, toggleTodo, clearCompleted",
-      "plugin_dir_label": "Plugin Directory:",
-      "plugin_id_label": "Plugin ID:",
-      "title": "Plugin Information",
-      "unknown_value": "Unknown"
     },
     "todo_item": {
       "delete_button_tooltip": "Delete"
@@ -45,12 +17,32 @@
   },
   "settings": {
     "background_color": {
-      "description": "Background color of the todo widget",
-      "label": "Background Color"
+      "label": "Background Color",
+      "description": "Background color of the todo widget"
     },
     "show_completed": {
-      "description": "Display completed todo items in the panel",
-      "label": "Show Completed Todos"
+      "label": "Show Completed Todos",
+      "description": "Display completed todo items in the panel"
     }
+  },
+  "bar_widget": {
+    "todo_count_singular": "{count} todo",
+    "todo_count_plural": "{count} todos"
+  },
+  "main": {
+    "added_new_todo": "Added new todo: ",
+    "todo_completed": "completed",
+    "todo_marked_incomplete": "marked as incomplete",
+    "todo_status_changed": "Todo ",
+    "todo_not_found": "Todo with ID ",
+    "not_found_suffix": " not found",
+    "cleared_completed_todos": "Cleared ",
+    "completed_todos_suffix": " completed todos",
+    "removed_todo": "Removed todo item"
+  },
+  "desktop_widget": {
+    "header_title": "To-Do List",
+    "items_count": "{active} of {total} items",
+    "empty_state": "No to-dos"
   }
 }
