@@ -85,10 +85,10 @@ Item {
     }
   }
 
-  // Detect Steam windows
+  // Detect Steam windows (only Friends List, Main, and small Chat windows)
   Process {
     id: detectWindows
-    command: ["bash", "-c", "hyprctl clients -j | jq -c '.[] | select(.class == \"steam\") | {address: .address, title: .title, x: .at[0], y: .at[1], w: .size[0], h: .size[1]}'"]
+    command: ["bash", "-c", "hyprctl clients -j | jq -c '.[] | select(.class == \"steam\" and .fullscreen == 0) | {address: .address, title: .title, x: .at[0], y: .at[1], w: .size[0], h: .size[1]}'"]
     running: false
 
     property var lines: []
@@ -101,7 +101,27 @@ Item {
 
     onExited: (exitCode, exitStatus) => {
       if (exitCode === 0 && lines.length > 0) {
-        steamWindows = lines.map(line => JSON.parse(line));
+        var allWindows = lines.map(line => JSON.parse(line));
+
+        // Filter only main Steam UI windows (Friends List, Main Window, Chat)
+        steamWindows = allWindows.filter(win => {
+          var title = win.title || "";
+          var width = win.w || 0;
+          var height = win.h || 0;
+
+          // Accept Friends List
+          if (title.includes("Friends List")) return true;
+
+          // Accept main Steam window
+          if (title === "Steam") return true;
+
+          // Accept small chat windows (typically < 600px wide)
+          if (width < 600 && height < 800) return true;
+
+          // Reject everything else (games, large auxiliary windows, etc.)
+          return false;
+        });
+
         var msg = pluginApi?.tr("main.windows_found").replace("{count}", steamWindows.length);
         console.log("SteamOverlay:", msg);
         lines = [];
