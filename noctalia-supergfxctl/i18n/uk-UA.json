@@ -1,41 +1,41 @@
 {
-	"gpu": "Відеокарта",
-	"unknown": "Невідомо",
-	"settings": {
-		"debug": {
-			"label": "Режим налагодження",
-			"description": "Виводить доп. інформацію в консоль."
-		},
-		"supergfxctl": {
-			"patchPending": {
-				"label": "Вгадувати дію",
-				"description": "Вгадувати необхідну дію замість використання виводу supergfxctl."
-			},
-			"polling": {
-				"label": "Опитування",
-				"description": "Періодично опитувати supergfxctl для оновлення стану."
-			}
-		},
-		"rogcc": {
-			"listenToNotifications": {
-				"label": "Слухати сповіщення про зміну режиму",
-				"description": "Реагувати на сповіщення про зміну режиму відеокарти від rog-control-center."
-			}
-		}
-	},
-	"context-menu": {
-		"refresh": "Оновити стан"
-	},
-	"action": {
-		"SwitchToIntegrated": "Спочатку перемкните на інтегровану відеокарту.",
-		"AsusEgpuDisable": "Спочатку вимкните ASUS eGPU."
-	},
-	"mode": {
-		"Integrated": "Інтегрована",
-		"Hybrid": "Гібрид",
-		"NvidiaNoModeset": "NVIDIA без modeset",
-		"Vfio": "VFIO Passthrough",
-		"AsusEgpu": "Asus eGPU",
-		"AsusMuxDgpu": "Asus MUX dGPU"
-	}
+  "action": {
+    "AsusEgpuDisable": "Спочатку вимкните ASUS eGPU.",
+    "SwitchToIntegrated": "Спочатку перемкните на інтегровану відеокарту."
+  },
+  "context-menu": {
+    "refresh": "Оновити стан"
+  },
+  "gpu": "Відеокарта",
+  "mode": {
+    "AsusEgpu": "Asus eGPU",
+    "AsusMuxDgpu": "Asus MUX dGPU",
+    "Hybrid": "Гібрид",
+    "Integrated": "Інтегрована",
+    "NvidiaNoModeset": "NVIDIA без modeset",
+    "Vfio": "VFIO Passthrough"
+  },
+  "settings": {
+    "debug": {
+      "description": "Виводить доп. інформацію в консоль.",
+      "label": "Режим налагодження"
+    },
+    "rogcc": {
+      "listenToNotifications": {
+        "description": "Реагувати на сповіщення про зміну режиму відеокарти від rog-control-center.",
+        "label": "Слухати сповіщення про зміну режиму"
+      }
+    },
+    "supergfxctl": {
+      "patchPending": {
+        "description": "Вгадувати необхідну дію замість використання виводу supergfxctl.",
+        "label": "Вгадувати дію"
+      },
+      "polling": {
+        "description": "Періодично опитувати supergfxctl для оновлення стану.",
+        "label": "Опитування"
+      }
+    }
+  },
+  "unknown": "Невідомо"
 }
