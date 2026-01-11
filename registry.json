@@ -92,11 +92,11 @@
       "name": "Steam Overlay (Hyprland)",
       "version": "1.7.0",
       "author": "blacku",
-      "description": "Steam overlay with automatic window management for Hyprland. Automatically moves all Steam windows (except fullscreen games) to overlay workspace as floating windows. Main 3 windows (Friends, Client, Chat) are positioned in a row. Additional windows are brought to top. If new windows don't appear on top, toggle overlay off/on (Super+S twice). Fully responsive with percentage-based layout. Requires Hyprland window manager.",
+      "description": "Steam overlay with automatic window management for Hyprland..",
       "minNoctaliaVersion": "3.6.0",
       "license": "MIT",
       "tags": [],
-      "lastUpdated": "2026-01-10T21:31:31+01:00"
+      "lastUpdated": "2026-01-11T11:27:05-05:00"
     },
     {
       "id": "kagi-quick-search",
@@ -163,7 +163,7 @@
     {
       "id": "network-indicator",
       "name": "NetworkIndicator",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": "tonigineer",
       "description": "A `lively` network traffic indicator.",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
@@ -174,7 +174,7 @@
         "Network",
         "Indicator"
       ],
-      "lastUpdated": "2026-01-04T21:11:31-05:00"
+      "lastUpdated": "2026-01-11T11:27:05-05:00"
     },
     {
       "id": "noctalia-supergfxctl",
@@ -212,13 +212,13 @@
     {
       "id": "rss-feed",
       "name": "RSS Feed Reader",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "Lokize",
       "description": "Monitor and read RSS/Atom feeds directly from your desktop",
       "minNoctaliaVersion": "3.6.0",
       "license": "MIT",
       "tags": [],
-      "lastUpdated": "2026-01-06T08:00:55-03:00"
+      "lastUpdated": "2026-01-11T11:27:05-05:00"
     },
     {
       "id": "screen-recorder",
@@ -238,7 +238,7 @@
     {
       "id": "simple-notes",
       "name": "Simple Notes",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": "fusuyfusuy",
       "description": "A simple note taking plugin for Noctalia Shell.",
       "repository": "",
@@ -249,7 +249,7 @@
         "Panel",
         "Productivity"
       ],
-      "lastUpdated": "2026-01-04T21:11:31-05:00"
+      "lastUpdated": "2026-01-11T11:27:05-05:00"
     },
     {
       "id": "steam-price-watcher",
@@ -265,7 +265,7 @@
     {
       "id": "timer",
       "name": "Timer",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "author": "Noctalia Team",
       "description": "A timer and stopwatch plugin for the bar & control center.",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
@@ -275,7 +275,7 @@
         "Bar",
         "Utility"
       ],
-      "lastUpdated": "2026-01-10T11:17:09+01:00"
+      "lastUpdated": "2026-01-11T11:27:05-05:00"
     },
     {
       "id": "todo",
@@ -297,7 +297,7 @@
     {
       "id": "update-count",
       "name": "Update Count",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "author": "BukoMoon",
       "description": "Checks for system updates and shows the update count. Click to run update command in a terminal.",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
@@ -307,7 +307,7 @@
         "Bar",
         "System"
       ],
-      "lastUpdated": "2026-01-09T20:02:36-05:00"
+      "lastUpdated": "2026-01-11T11:27:05-05:00"
     },
     {
       "id": "world-clock",
