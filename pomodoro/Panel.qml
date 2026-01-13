@@ -39,6 +39,7 @@ Item {
   function resetSession() { if (mainInstance) mainInstance.pomodoroResetSession(); }
   function resetAll() { if (mainInstance) mainInstance.pomodoroResetAll(); }
   function skipTimer() { if (mainInstance) mainInstance.pomodoroSkip(); }
+  function stopAlarm() { if (mainInstance) mainInstance.pomodoroStopAlarm(); }
 
   function formatTime(seconds, totalTimeSeconds) {
     const hours = Math.floor(seconds / 3600);
@@ -111,6 +112,40 @@ Item {
               font.weight: Style.fontWeightBold
               color: Color.mOnSurface
               Layout.fillWidth: true
+            }
+
+            Item {
+              id: alarmButtonContainer
+              Layout.alignment: Qt.AlignVCenter
+              Layout.preferredWidth: soundPlaying ? (bellIcon.implicitWidth + Style.marginS) : 0
+              Layout.preferredHeight: bellIcon.implicitHeight + Style.marginS
+              clip: true
+
+              Behavior on Layout.preferredWidth {
+                NumberAnimation { duration: 150; easing.type: Easing.InOutQuad }
+              }
+
+              NIcon {
+                id: bellIcon
+                anchors.centerIn: parent
+                icon: "bell-ringing"
+                pointSize: Style.fontSizeXL
+                color: bellMouseArea.containsMouse ? Qt.lighter(Color.mError, 1.2) : Color.mError
+                opacity: soundPlaying ? 1 : 0
+
+                Behavior on opacity {
+                  NumberAnimation { duration: 150 }
+                }
+              }
+
+              MouseArea {
+                id: bellMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                enabled: soundPlaying
+                cursorShape: Qt.PointingHandCursor
+                onClicked: stopAlarm()
+              }
             }
             
             NText {
