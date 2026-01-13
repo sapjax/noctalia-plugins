@@ -78,6 +78,9 @@ Item {
   }
 
   function loadTodos() {
+    // Store the current scroll position
+    var currentScrollPos = todoListView ? todoListView.contentY : 0;
+
     todosModel.clear();
     filteredTodosModel.clear();
 
@@ -101,6 +104,13 @@ Item {
                                     createdAt: pluginTodos[k].createdAt
                                   });
       }
+    }
+
+    // Restore the scroll position
+    if (todoListView) {
+      Qt.callLater(function() {
+        todoListView.contentY = currentScrollPos;
+      });
     }
   }
 
