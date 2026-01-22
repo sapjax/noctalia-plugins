@@ -53,7 +53,7 @@ Rectangle {
     anchors.fill: parent
     hoverEnabled: true
     cursorShape: Qt.PointingHandCursor
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton
 
     onEntered: {
       root.color = Color.mHover
@@ -67,10 +67,6 @@ Rectangle {
       if (mouse.button === Qt.LeftButton) {
         if (pluginApi) {
           pluginApi.openPanel(root.screen, root)
-        }
-      } else if (mouse.button === Qt.RightButton) {
-        if (mainInstance?.tailscaleInstalled) {
-          mainInstance.toggleTailscale()
         }
       }
     }
