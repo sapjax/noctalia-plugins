@@ -73,13 +73,14 @@
       "version": "1.0.0",
       "author": "Ronin-CK",
       "description": "DNS Manager",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
       "tags": [
         "Bar",
         "Network"
       ],
-      "lastUpdated": "2026-01-20T18:56:53+01:00"
+      "lastUpdated": "2026-01-25T13:33:21-05:00"
     },
     {
       "id": "fancy-audiovisualizer",
