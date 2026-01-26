@@ -38,6 +38,11 @@ All notable changes to this project will be documented in this file.
 - Added a 250ms debounce to panel header and bar widget badge pulses to avoid multiple pulse animations when many items arrive simultaneously.
 - Settings are persisted via `pluginApi.saveSettings()` (Noctalia plugin storage). Writing a local `settings.json` in the plugin root was removed in favor of using the plugin storage only.
 
+### Fixed
+
+- Panel: Update unread badge immediately when marking items as read so the bar widget reflects the new count without delay.
+
+
 ### Notes
 
 - Minimum Noctalia version: `3.6.0`.

@@ -286,8 +286,8 @@ Item {
         
         Logger.d("RSS", "Marking as read:", guid);
         
-        // Get current readItems from settings
-        const currentReadItems = cfg.readItems || defaults.readItems || [];
+        // Use current local readItems if available to update UI immediately
+        const currentReadItems = readItems || cfg.readItems || defaults.readItems || [];
         
         if (currentReadItems.includes(guid)) {
             Logger.d("RSS", "Already marked as read");
@@ -295,13 +295,15 @@ Item {
         }
         
         // Add to readItems array - create new array
-        let newReadItems = [];
-        for (let i = 0; i < currentReadItems.length; i++) {
-            newReadItems.push(currentReadItems[i]);
-        }
+        let newReadItems = currentReadItems.slice();
         newReadItems.push(guid);
         
         Logger.d("RSS", "New readItems array:", JSON.stringify(newReadItems));
+        
+        // Update local state immediately so the badge updates without waiting for reload
+        readItems = newReadItems;
+        updateDisplayItems();
+        updateUnreadCount();
         
         // Save to settings using the same pattern as Settings.qml
         if (pluginApi) {
@@ -312,7 +314,7 @@ Item {
             pluginApi.saveSettings();
             Logger.d("RSS", "Settings saved, readItems count:", newReadItems.length);
             
-            // Trigger reload timer
+            // Trigger reload timer for consistency
             settingsReloadTimer.restart();
         }
     }
@@ -324,14 +326,11 @@ Item {
         
         Logger.d("RSS", "Marking all as read, count:", allItems.length);
         
-        // Get current readItems from settings
-        const currentReadItems = cfg.readItems || defaults.readItems || [];
+        // Use local readItems to update UI immediately
+        const currentReadItems = readItems || cfg.readItems || defaults.readItems || [];
         
         // Collect all guids - create new array
-        let newReadItems = [];
-        for (let i = 0; i < currentReadItems.length; i++) {
-            newReadItems.push(currentReadItems[i]);
-        }
+        let newReadItems = currentReadItems.slice();
         
         for (let i = 0; i < allItems.length; i++) {
             const guid = allItems[i].guid || allItems[i].link;
@@ -341,6 +340,11 @@ Item {
         }
         
         Logger.d("RSS", "New readItems array length:", newReadItems.length);
+        
+        // Update local state immediately so badge updates
+        readItems = newReadItems;
+        updateDisplayItems();
+        updateUnreadCount();
         
         // Save to settings using the same pattern as Settings.qml
         if (pluginApi) {
