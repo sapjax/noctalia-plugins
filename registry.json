@@ -174,7 +174,7 @@
     {
       "id": "hello-world",
       "name": "Hello World",
-      "version": "1.0.12",
+      "version": "1.1.0",
       "official": true,
       "author": "Noctalia Team",
       "description": "A simple Hello World plugin demonstrating functionalities. For developers only.",
@@ -184,7 +184,7 @@
       "tags": [
         "Development"
       ],
-      "lastUpdated": "2026-01-27T14:01:09-05:00"
+      "lastUpdated": "2026-02-06T14:26:27-05:00"
     },
     {
       "id": "hyprland-steam-overlay",
