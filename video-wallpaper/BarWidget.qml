@@ -54,6 +54,11 @@ Item {
                     root.pluginApi?.tr("barWidget.contextMenu.mute") || "Mute",
                 "action": root.isMuted ? "unmute" : "mute",
                 "icon": root.isMuted ? "volume-high" : "volume-mute"
+            },
+            {
+                "label": root.pluginApi?.tr("barWidget.contextMenu.settings") || "Settings",
+                "action": "settings",
+                "icon": "settings"
             }
         ]
 
@@ -84,6 +89,9 @@ Item {
                 case "unmute":
                     root.pluginApi.pluginSettings.isMuted = false;
                     root.pluginApi.saveSettings();
+                    break;
+                    case "settings":
+                    BarService.openPluginSettings(root.screen, pluginApi.manifest);
                     break;
                 default:
                     Logger.e("video-wallpaper", "Error, action not found:", action);

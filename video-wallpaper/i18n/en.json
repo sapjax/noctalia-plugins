@@ -6,7 +6,8 @@
       "pause": "Pause",
       "play": "Play",
       "unmute": "Unmute",
-      "mute": "Mute"
+      "mute": "Mute",
+      "settings": "Settings"
     },
     "tooltip": "Open the video wallpaper manager."
   },
@@ -91,6 +92,17 @@
         "file_picker": {
           "title": "Choose current wallpaper"
         }
+      },
+      "fill_mode": {
+        "label": "Fill Mode",
+        "description": "The mode that the wallpaper is fitted into the background.",
+        "stretch": "Stretch",
+        "fit": "Fit",
+        "crop": "Crop"
+      },
+      "orientation": {
+        "label": "Orientation",
+        "description": "The orientation of the video playing, can be any multiple of 90."
       },
       "volume": {
         "label": "Volume",
