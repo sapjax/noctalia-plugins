@@ -184,7 +184,7 @@ Item {
               // Priority selector using a simplified approach
               Item {
                 Layout.preferredWidth: 120
-                Layout.preferredHeight: Style.baseWidgetSize
+                Layout.preferredHeight: Style.baseWidgetSize * 0.95
 
                 Rectangle {
                   anchors.fill: parent
@@ -268,6 +268,8 @@ Item {
 
               NIconButton {
                 icon: "plus"
+                baseSize: Style.baseWidgetSize * 1.2
+                customRadius: Style.iRadiusS
                 onClicked: {
                   addTodo();
                   priorityGroup.currentPriority = "medium"; // Reset to default after adding
