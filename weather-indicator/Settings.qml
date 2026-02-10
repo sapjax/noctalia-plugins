@@ -12,11 +12,11 @@ ColumnLayout {
   property var cfg: pluginApi?.pluginSettings || ({})
   property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
 
-  property bool showTempValue: cfg.showTempValue || defaults.showTempValue
-  property bool showConditionIcon: cfg.showConditionIcon || defaults.showConditionIcon
-  property bool showTempUnit: cfg.showTempUnit || defaults.showTempUnit
-  property string tooltipOption: cfg.tooltipOption || defaults.tooltipOption
-  property string customColor: cfg.customColor || defaults.customColor
+  property bool showTempValue: cfg.showTempValue ?? defaults.showTempValue
+  property bool showConditionIcon: cfg.showConditionIcon ?? defaults.showConditionIcon
+  property bool showTempUnit: cfg.showTempUnit ?? defaults.showTempUnit
+  property string tooltipOption: cfg.tooltipOption ?? defaults.tooltipOption
+  property string customColor: cfg.customColor ?? defaults.customColor
   spacing: Style.marginL
 
   Component.onCompleted: {
