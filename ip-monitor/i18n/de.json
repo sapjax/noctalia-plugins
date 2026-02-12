@@ -1,23 +1,42 @@
 {
   "menu": {
-    "settings": "Widget Einstellungen"
+    "settings": "Widget-Einstellungen"
   },
   "panel": {
-    "test": "Diese Zeichenkette wird über die Plugin-API übersetzt",
+    "test": "Diese Zeichenfolge wird über die Plugin-API übersetzt",
     "open-settings": "Plugin-Einstellungen öffnen"
   },
   "settings": {
+    "appearance": {
+      "title": "Aussehen"
+    },
     "iconColor": {
-      "desc": "Farbe des Bar Widget Symbols.",
+      "desc": "Farbe für das Symbol, wenn die IP erfolgreich abgerufen wurde",
       "label": "Symbolfarbe"
     },
-    "message": {
-      "desc": "Benutzerdefinierte Nachricht, die im Panel angezeigt werden soll.",
-      "label": "Nachricht",
-      "placeholder": "Nachricht eingeben..."
+    "stateIcons": {
+      "title": "Statussymbole"
+    },
+    "successIcon": {
+      "desc": "Symbol, das angezeigt wird, wenn die IP erfolgreich abgerufen wurde",
+      "label": "Erfolgssymbol"
+    },
+    "errorIcon": {
+      "desc": "Symbol, das angezeigt wird, wenn der IP-Abruf fehlschlägt",
+      "label": "Fehlersymbol"
+    },
+    "loadingIcon": {
+      "desc": "Symbol, das beim Abrufen der IP angezeigt wird",
+      "label": "Ladesymbol"
+    },
+    "browseIcons": "Symbole durchsuchen",
+    "behavior": {
+      "title": "Verhalten"
+    },
+    "refreshInterval": {
+      "desc": "Wie oft die IP-Informationen automatisch aktualisiert werden sollen. Auf 0 setzen, um die automatische Aktualisierung zu deaktivieren.",
+      "label": "Automatisches Aktualisierungsintervall (Sekunden)",
+      "placeholder": "300"
     }
-  },
-  "widget": {
-    "tooltip": "Hallo Welt"
   }
 }

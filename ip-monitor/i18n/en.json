@@ -38,8 +38,5 @@
       "label": "Auto-refresh Interval (seconds)",
       "placeholder": "300"
     }
-  },
-  "widget": {
-    "tooltip": "Hello World"
   }
 }
