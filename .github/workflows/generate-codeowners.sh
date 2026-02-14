@@ -21,6 +21,9 @@ cat > "$CODEOWNERS_FILE" <<'EOF'
 # Do not edit manually.
 #
 # Each plugin directory is owned by the first person who committed to it.
+# Fallback owners: @Ly-sec @ItsLemmy
+
+* @Ly-sec @ItsLemmy
 
 EOF
 
@@ -45,34 +48,33 @@ for dir in "$REPO_ROOT"/*/; do
 
   # Find the first commit that touched this directory (oldest commit)
   # Use awk to get first line to avoid SIGPIPE with head
-  first_author=$(git log --diff-filter=A --format='%ae' --reverse -- "$dir" 2>/dev/null | awk 'NR==1{print;exit}')
+  first_author_email=$(git log --diff-filter=A --format='%ae' --reverse -- "$dir" 2>/dev/null | awk 'NR==1{print;exit}')
 
-  if [[ -z "$first_author" ]]; then
+  if [[ -z "$first_author_email" ]]; then
     # Fallback: get the oldest commit author for this directory
-    first_author=$(git log --format='%ae' --reverse -- "$dir" 2>/dev/null | awk 'NR==1{print;exit}')
+    first_author_email=$(git log --format='%ae' --reverse -- "$dir" 2>/dev/null | awk 'NR==1{print;exit}')
   fi
 
-  if [[ -z "$first_author" ]]; then
+  if [[ -z "$first_author_email" ]]; then
     echo "  [SKIP]  $pattern (no commits found)"
     continue
   fi
 
   # Try to extract the GitHub username from the email
   # GitHub noreply emails: user@users.noreply.github.com or 12345+user@users.noreply.github.com
-  github_username=""
-  if echo "$first_author" | grep -qE '^([0-9]+\+)?[^@]+@users\.noreply\.github\.com$'; then
+  owner=""
+  if echo "$first_author_email" | grep -qE '^([0-9]+\+)?[^@]+@users\.noreply\.github\.com$'; then
     # Extract username from noreply email
-    github_username=$(echo "$first_author" | sed -E 's/^([0-9]+\+)?([^@]+)@users\.noreply\.github\.com$/\2/')
+    github_username=$(echo "$first_author_email" | sed -E 's/^([0-9]+\+)?([^@]+)@users\.noreply\.github\.com$/\2/')
+    owner="@$github_username"
   else
-    # For non-noreply emails, get the author name from the same commit
-    github_username=$(git log --format='%an' --reverse -- "$dir" 2>/dev/null | awk 'NR==1{print;exit}')
-    # Replace spaces with hyphens
-    github_username=$(echo "$github_username" | tr ' ' '-')
+    # Fallback to the email address itself
+    owner="$first_author_email"
   fi
 
-  if [[ -n "$github_username" ]]; then
-    echo "$pattern @$github_username" >> "$CODEOWNERS_FILE"
-    echo "  [NEW]   $pattern @$github_username"
+  if [[ -n "$owner" ]]; then
+    echo "$pattern $owner" >> "$CODEOWNERS_FILE"
+    echo "  [NEW]   $pattern $owner"
   fi
 done
 
