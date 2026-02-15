@@ -174,10 +174,10 @@ Item {
       visible: !isVertical
 
       // News icon
-      NIcon {
-        icon: "newspaper"
+      Text {
+        text: "📰"
+        font.pointSize: root.barFontSize * 1.2
         color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
-        pointSize: Style.toOdd(root.capsuleHeight * 0.5)
         Layout.alignment: Qt.AlignVCenter
       }
 
@@ -233,10 +233,10 @@ Item {
       }
 
       // Refresh button
-      NIcon {
-        icon: "refresh-cw"
+      Text {
+        text: "🔄"
+        font.pointSize: root.barFontSize * 0.9
         color: refreshMouseArea.containsMouse ? Color.mPrimary : (mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface)
-        pointSize: Style.toOdd(root.capsuleHeight * 0.4)
         Layout.alignment: Qt.AlignVCenter
 
         MouseArea {
@@ -258,9 +258,9 @@ Item {
       spacing: Style.marginXS
       visible: isVertical
 
-      NIcon {
-        icon: "newspaper"
-        pointSize: Style.toOdd(root.capsuleHeight * 0.45)
+      Text {
+        text: "📰"
+        font.pointSize: root.barFontSize * 1.2
         color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
         Layout.alignment: Qt.AlignHCenter
       }

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-02-15
+
+### Fixed
+- Replaced NIcon with emoji for news icon (📰) to match original implementation
+- Replaced NIcon refresh button with emoji (🔄) for better compatibility
+- Ensures icons display correctly regardless of icon theme
+
 ## [1.0.1] - 2026-02-15
 
 ### Fixed
