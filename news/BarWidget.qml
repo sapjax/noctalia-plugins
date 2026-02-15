@@ -1,0 +1,307 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
+import qs.Commons
+import qs.Services.UI
+import qs.Widgets
+
+// News Bar Widget Component
+Item {
+  id: root
+
+  property var pluginApi: null
+
+  // Required properties for bar widgets
+  property ShellScreen screen
+  property string widgetId: ""
+  property string section: ""
+
+  // Bar positioning properties
+  readonly property string screenName: screen ? screen.name : ""
+  readonly property string barPosition: Settings.getBarPositionForScreen(screenName)
+  readonly property bool isVertical: barPosition === "left" || barPosition === "right"
+  readonly property real barHeight: Style.getBarHeightForScreen(screenName)
+  readonly property real capsuleHeight: Style.getCapsuleHeightForScreen(screenName)
+  readonly property real barFontSize: Style.getBarFontSizeForScreen(screenName)
+
+  // Configuration
+  property var cfg: pluginApi?.pluginSettings || ({})
+  property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
+
+  // Get settings from configuration
+  readonly property string apiKey: cfg.apiKey ?? defaults.apiKey ?? "YOUR_API_KEY_HERE"
+  readonly property string country: cfg.country ?? defaults.country ?? "us"
+  readonly property string category: cfg.category ?? defaults.category ?? "general"
+  readonly property int refreshInterval: cfg.refreshInterval ?? defaults.refreshInterval ?? 30
+  readonly property int maxHeadlines: cfg.maxHeadlines ?? defaults.maxHeadlines ?? 10
+  readonly property int rollingSpeed: cfg.rollingSpeed ?? defaults.rollingSpeed ?? 50
+  readonly property int widgetWidth: cfg.widgetWidth ?? defaults.widgetWidth ?? 300
+
+  // News data
+  property var newsData: []
+  property string allNewsText: ""
+  property bool isLoading: false
+  property string errorMessage: ""
+
+  // API configuration
+  readonly property string baseUrl: "https://newsapi.org/v2"
+
+  readonly property real visualContentWidth: {
+    if (isVertical) return root.capsuleHeight;
+    return widgetWidth;
+  }
+
+  readonly property real visualContentHeight: {
+    if (!isVertical) return root.capsuleHeight;
+    return root.capsuleHeight * 2;
+  }
+
+  readonly property real contentWidth: isVertical ? root.capsuleHeight : visualContentWidth
+  readonly property real contentHeight: isVertical ? visualContentHeight : root.capsuleHeight
+
+  implicitWidth: contentWidth
+  implicitHeight: contentHeight
+
+  // Auto-refresh timer
+  Timer {
+    id: refreshTimer
+    interval: refreshInterval * 60 * 1000
+    running: true
+    repeat: true
+    onTriggered: fetchNews()
+  }
+
+  // Update combined news text
+  function updateAllNewsText() {
+    if (newsData.length === 0) {
+      allNewsText = ""
+      return
+    }
+    
+    var combined = ""
+    for (var i = 0; i < newsData.length; i++) {
+      if (i > 0) combined += "  •  "
+      combined += "[" + (i + 1) + "] " + (newsData[i]?.title || "No headline")
+    }
+    allNewsText = combined
+  }
+
+  onNewsDataChanged: updateAllNewsText()
+
+  // Fetch news
+  function fetchNews() {
+    isLoading = true
+    errorMessage = ""
+
+    if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+      errorMessage = "API key not configured"
+      isLoading = false
+      console.log("[News Plugin] Error: API key not configured")
+      return
+    }
+
+    var xhr = new XMLHttpRequest()
+    var url = baseUrl + "/top-headlines?country=" + country + 
+              "&category=" + category + 
+              "&apiKey=" + apiKey
+
+    console.log("[News Plugin] Fetching headlines - Category:", category)
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        console.log("[News Plugin] Response received - Status:", xhr.status)
+
+        if (xhr.status === 200) {
+          try {
+            var response = JSON.parse(xhr.responseText)
+            if (response.status === "ok" && response.articles) {
+              console.log("[News Plugin] Success: Fetched", response.articles.length, "articles")
+              newsData = response.articles.slice(0, maxHeadlines)
+              isLoading = false
+              errorMessage = ""
+            } else {
+              errorMessage = response.message || "API error"
+              isLoading = false
+              console.log("[News Plugin] API Error:", response.message || "Unknown error")
+            }
+          } catch (e) {
+            errorMessage = "Failed to parse response"
+            isLoading = false
+            console.log("[News Plugin] Parse Error:", e.toString())
+          }
+        } else if (xhr.status === 401) {
+          errorMessage = "Invalid API key"
+          isLoading = false
+          console.log("[News Plugin] Error: Invalid API key (401)")
+        } else if (xhr.status === 429) {
+          errorMessage = "Rate limit exceeded"
+          isLoading = false
+          console.log("[News Plugin] Error: Rate limit exceeded (429)")
+        } else if (xhr.status === 0) {
+          errorMessage = "Network error"
+          isLoading = false
+          console.log("[News Plugin] Error: Network error or CORS issue (0)")
+        } else {
+          errorMessage = "HTTP error " + xhr.status
+          isLoading = false
+          console.log("[News Plugin] Error: HTTP", xhr.status)
+        }
+      }
+    }
+
+    xhr.open("GET", url)
+    xhr.send()
+  }
+
+  Rectangle {
+    id: visualCapsule
+    x: Style.pixelAlignCenter(parent.width, width)
+    y: Style.pixelAlignCenter(parent.height, height)
+    width: root.contentWidth
+    height: root.contentHeight
+    radius: Style.radiusM
+    color: mouseArea.containsMouse ? Color.mHover : Style.capsuleColor
+    border.color: Style.capsuleBorderColor
+    border.width: Style.capsuleBorderWidth
+
+    // Horizontal layout
+    RowLayout {
+      anchors.fill: parent
+      anchors.leftMargin: Style.marginS
+      anchors.rightMargin: Style.marginS
+      spacing: Style.marginXS
+      visible: !isVertical
+
+      // News icon
+      NIcon {
+        icon: "newspaper"
+        color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+        pointSize: Style.toOdd(root.capsuleHeight * 0.5)
+        Layout.alignment: Qt.AlignVCenter
+      }
+
+      // News content with scrolling
+      Item {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        clip: true
+
+        property string displayText: {
+          if (errorMessage !== "") return errorMessage
+          if (isLoading) return "Loading news..."
+          if (newsData.length === 0) return "No news available"
+          return allNewsText
+        }
+
+        NText {
+          id: newsText
+          y: (parent.height - height) / 2
+          text: parent.displayText
+          color: {
+            if (errorMessage !== "") return Color.mError
+            return mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+          }
+          pointSize: root.barFontSize
+          applyUiScale: false
+          
+          x: textAnimation.running ? 0 : (contentWidth > parent.width ? parent.width - contentWidth : 0)
+          
+          SequentialAnimation {
+            id: textAnimation
+            running: newsText.contentWidth > newsText.parent.width && !isLoading && errorMessage === ""
+            loops: Animation.Infinite
+            
+            PauseAnimation { duration: 2000 }
+            NumberAnimation {
+              target: newsText
+              property: "x"
+              from: 0
+              to: -(newsText.contentWidth - newsText.parent.width + 20)
+              duration: newsText.contentWidth * rollingSpeed
+              easing.type: Easing.Linear
+            }
+            PauseAnimation { duration: 1000 }
+            NumberAnimation {
+              target: newsText
+              property: "x"
+              to: 0
+              duration: 500
+            }
+          }
+        }
+      }
+
+      // Refresh button
+      NIcon {
+        icon: "refresh-cw"
+        color: refreshMouseArea.containsMouse ? Color.mPrimary : (mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface)
+        pointSize: Style.toOdd(root.capsuleHeight * 0.4)
+        Layout.alignment: Qt.AlignVCenter
+
+        MouseArea {
+          id: refreshMouseArea
+          anchors.fill: parent
+          hoverEnabled: true
+          cursorShape: Qt.PointingHandCursor
+          onClicked: {
+            mouse.accepted = true
+            fetchNews()
+          }
+        }
+      }
+    }
+
+    // Vertical layout (simplified)
+    ColumnLayout {
+      anchors.centerIn: parent
+      spacing: Style.marginXS
+      visible: isVertical
+
+      NIcon {
+        icon: "newspaper"
+        pointSize: Style.toOdd(root.capsuleHeight * 0.45)
+        color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+        Layout.alignment: Qt.AlignHCenter
+      }
+
+      NText {
+        text: newsData.length > 0 ? newsData.length.toString() : "?"
+        color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+        pointSize: root.barFontSize * 0.65
+        applyUiScale: false
+        Layout.alignment: Qt.AlignHCenter
+      }
+    }
+  }
+
+  // Mouse interaction
+  MouseArea {
+    id: mouseArea
+    anchors.fill: parent
+    hoverEnabled: true
+    cursorShape: Qt.PointingHandCursor
+    acceptedButtons: Qt.LeftButton
+
+    onClicked: {
+      if (pluginApi) {
+        BarService.openPluginSettings(root.screen, pluginApi.manifest);
+      }
+    }
+
+    onEntered: {
+      var tooltip = newsData.length > 0 
+        ? newsData.length + " headlines\nClick to configure"
+        : "Click to configure news";
+      TooltipService.show(root, tooltip, BarService.getTooltipDirection());
+    }
+
+    onExited: {
+      TooltipService.hide();
+    }
+  }
+
+  Component.onCompleted: {
+    fetchNews();
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "news",
+  "name": "News Bar",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "3.6.0",
+  "author": "Noctalia",
+  "license": "MIT",
+  "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+  "description": "Display scrolling news headlines from various sources using NewsAPI.org",
+  "entryPoints": {
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "apiKey": "YOUR_API_KEY_HERE",
+      "country": "us",
+      "category": "general",
+      "refreshInterval": 30,
+      "maxHeadlines": 10,
+      "rollingSpeed": 50,
+      "widgetWidth": 300
+    }
+  }
+}
