@@ -30,34 +30,22 @@ Item {
   }
 
   Process {
-    id: cameraCheckProcess
+    id: cameraDetectionProcess
     running: false
-    command: ["sh", "-c", "for dev in /dev/video*; do [ -e \"$dev\" ] && [ -n \"$(find /proc/[0-9]*/fd/ -lname \"$dev\" 2>/dev/null | head -n1)\" ] && echo \"active\" && exit 0; done; exit 1"]
-    onExited: (code, status) => {
-      var isActive = code === 0;
-      root.camActive = isActive;
-      if (isActive) {
-        cameraAppsProcess.running = true;
-      } else {
-        root.camApps = [];
-      }
-    }
-  }
-
-  Process {
-    id: cameraAppsProcess
-    running: false
-    command: ["sh", "-c", "for dev in /dev/video*; do [ -e \"$dev\" ] && for fd in /proc/[0-9]*/fd/*; do [ -L \"$fd\" ] && [ \"$(readlink \"$fd\" 2>/dev/null)\" = \"$dev\" ] && ps -p \"$(echo \"$fd\" | cut -d/ -f3)\" -o comm= 2>/dev/null; done; done | sort -u | tr '\\n' ',' | sed 's/,$//'"]
+    command: ["sh", "-c", "for dev in /sys/class/video4linux/video*; do [ -e \"$dev/name\" ] && grep -qv 'Metadata' \"$dev/name\" && dev_name=$(basename \"$dev\") && find /proc/[0-9]*/fd -lname \"/dev/$dev_name\" 2>/dev/null; done | cut -d/ -f3 | xargs -r ps -o comm= -p | sort -u | tr '\\n' ',' | sed 's/,$//'"]
     onExited: (code, status) => {
       if (stdout) {
         var appsString = stdout.trim();
         var apps = appsString.length > 0 ? appsString.split(',') : [];
         root.camApps = apps;
+        root.camActive = apps.length > 0;
       } else {
         root.camApps = [];
+        root.camActive = false;
       }
     }
   }
+
 
   Timer {
     interval: 1000
@@ -99,7 +87,7 @@ Item {
   }
 
   function updateCameraState() {
-    cameraCheckProcess.running = true;
+    cameraDetectionProcess.running = true;
   }
 
   function isScreenShareNode(node) {
