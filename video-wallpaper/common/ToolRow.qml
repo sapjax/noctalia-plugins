@@ -20,12 +20,18 @@ RowLayout {
     required property string screenName
 
     // Optional properties
-    property bool   enabled:         true
-    
+    property bool enabled:        true
+    property var monitorSpecific: undefined
+
     // Monitor specific properties
-    readonly property bool isPlaying:       pluginApi?.pluginSettings?.[screenName]?.isPlaying || false
-    readonly property bool isMuted:         pluginApi?.pluginSettings?.[screenName]?.isMuted   || false
-    readonly property bool monitorSpecific: pluginApi?.pluginSettings?.monitorSpecific         || false
+    readonly property bool isPlaying: pluginApi?.pluginSettings?.[screenName]?.isPlaying || false
+    readonly property bool isMuted:   pluginApi?.pluginSettings?.[screenName]?.isMuted   || false
+
+    // Global properties
+    readonly property bool globalMonitorSpecific: pluginApi?.pluginSettings?.monitorSpecific || false
+
+    // Local properties
+    readonly property bool _monitorSpecific: monitorSpecific === undefined ? globalMonitorSpecific : (typeof monitorSpecific === "boolean" ? monitorSpecific : false);
 
 
     /********************************
@@ -62,7 +68,7 @@ RowLayout {
     }
 
     function saveSetting(key: string, value: var) {
-        if (!monitorSpecific) {
+        if (!_monitorSpecific) {
             for (const screen of Quickshell.screens) {
                 if (pluginApi?.pluginSettings?.[screen.name] === undefined) {
                     pluginApi.pluginSettings[screen.name] = {};
