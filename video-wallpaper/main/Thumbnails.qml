@@ -126,6 +126,7 @@ Item {
         id: thumbRegenerationProc
         onExited: {
             // Reload the thumbFolder first
+            root.folderModel.forceReload();
             root.thumbFolderModel.forceReload();
             root.thumbGeneration();
         }
