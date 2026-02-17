@@ -121,7 +121,7 @@ Item {
             let values = [];
             for (const screen of Quickshell.screens) {
                 if (root.pluginApi?.pluginSettings?.[screen.name]?.[key] !== undefined) {
-                    values.push(`${screen.name}: ${root.pluginApi.pluginSettings[screen.name][key]}`);
+                    values.push(`${screen.name}: ${root.pluginApi.pluginSettings[screen.name][key]}\n`);
                 }
             }
 
@@ -153,8 +153,7 @@ Item {
         }
 
         function getWallpaper(screen: string): string {
-            const s = root.getMonitorProperty("currentWallpaper", screen);
-            return `Wallpapers: [${s}]`;
+            return root.getMonitorProperty("currentWallpaper", screen);
         }
 
         // Enabled
@@ -169,7 +168,7 @@ Item {
             return root.enabled;
         }
 
-        function toggleActive() {
+        function toggleEnabled() {
             setEnabled(!root.enabled);
         }
 
