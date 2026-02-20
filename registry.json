@@ -139,18 +139,19 @@
     {
       "id": "dns-switcher",
       "name": "DNS Switcher",
-      "version": "1.0.1",
+      "version": "1.2.0",
       "official": false,
       "author": "Ronin-CK",
-      "description": "DNS Manager",
+      "description": "DNS Manager with custom server support for Noctalia.",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
       "tags": [
         "Bar",
-        "Network"
+        "Network",
+        "DNS"
       ],
-      "lastUpdated": "2026-01-26T23:59:29-05:00"
+      "lastUpdated": "2026-02-21T01:11:18+05:30"
     },
     {
       "id": "fancy-audiovisualizer",
