@@ -413,9 +413,26 @@
       "lastUpdated": "2026-01-26T23:59:29-05:00"
     },
     {
+      "id": "network-manager-vpn",
+      "name": "Network Manager VPN",
+      "version": "1.0.0",
+      "official": false,
+      "author": "nZO",
+      "description": "Connect to VPN via NetworkManager",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "3.6.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Network"
+      ],
+      "lastUpdated": "2026-02-18T11:09:59+01:00"
+    },
+    {
       "id": "news",
       "name": "News Bar",
-      "version": "1.1.2",
+      "version": "1.1.9",
       "official": false,
       "author": "Noctalia",
       "description": "Display scrolling news headlines from various sources using NewsAPI.org",
@@ -428,7 +445,7 @@
         "News",
         "Network"
       ],
-      "lastUpdated": "2026-02-15T17:48:00Z"
+      "lastUpdated": "2026-02-20T14:35:00Z"
     },
     {
       "id": "niri-overview-launcher",
@@ -592,10 +609,10 @@
     {
       "id": "screenshot",
       "name": "Screenshot",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "official": false,
       "author": "Cleboost",
-      "description": "Quick screenshot button in bar using hyprshot",
+      "description": "Quick screenshot button in bar for Hyprland, Sway, and Niri",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
       "minNoctaliaVersion": "3.6.0",
       "license": "MIT",
@@ -603,7 +620,7 @@
         "Bar",
         "Utility"
       ],
-      "lastUpdated": "2026-02-04T21:34:17+05:30"
+      "lastUpdated": "2026-02-19T17:33:45-05:00"
     },
     {
       "id": "simple-notes",
@@ -736,7 +753,7 @@
     {
       "id": "video-wallpaper",
       "name": "Video Wallpaper",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "official": false,
       "author": "Spyridon Siarapis",
       "description": "A plugin that uses a backend renderer to play videos as your wallpaper.",
@@ -749,7 +766,7 @@
         "Fun",
         "System"
       ],
-      "lastUpdated": "2026-02-17T18:37:36+01:00"
+      "lastUpdated": "2026-02-20T12:04:37+01:00"
     },
     {
       "id": "weather-indicator",
