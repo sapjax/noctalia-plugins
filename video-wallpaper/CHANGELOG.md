@@ -2,6 +2,18 @@
 
 Here I'll try to document all changes for the video-wallpaper plugin.
 
+## 2.0.1 - 2026-02-17
+
+- fix: Fixed a bug where the FolderModel didn't correctly recognize files with whitespaces in them.
+- fix: Rewrote the README file for more information and a bit of troubleshooting information.
+- fix: Rewrote some of the IPC calls for better consistency.
+
+## 2.0.0 - 2026-02-15
+
+- feat: Added multi monitor support.
+- fix: Fixed a lot of bugs that came with the multi monitor setup.
+- fix: Fixed a bug where it would output a lot of warnings in the logs.
+
 ## 1.2.1 - 2026-02-10
 
 - feat: Added support for orientation with mpvpaper.

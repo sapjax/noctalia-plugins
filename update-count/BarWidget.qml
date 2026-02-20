@@ -104,9 +104,9 @@ Item {
     const updateCount = root.pluginApi?.mainInstance?.updateCount
 
     if (updateCount === 0) {
-      TooltipService.show(root, pluginApi?.tr("tooltip.noUpdatesAvailable"), BarService.getTooltipDirection());
+      TooltipService.show(root, pluginApi?.tr("tooltip.noUpdatesAvailable"), BarService.getTooltipDirection(root.screenName));
     } else {
-      TooltipService.show(root, pluginApi?.tr("tooltip.updatesAvailable"), BarService.getTooltipDirection());
+      TooltipService.show(root, pluginApi?.tr("tooltip.updatesAvailable"), BarService.getTooltipDirection(root.screenName));
     }
   }
 }

@@ -127,7 +127,7 @@ MouseArea {
     onClicked: function (mouse) {
       if (mouse.button === Qt.LeftButton) {
         if (pluginApi) {
-          PanelService.getPanel("clockPanel", screen)?.toggle(root);
+            pluginApi.openPanel(root.screen, root);
         }
       } else if (mouse.button === Qt.RightButton) {
         PanelService.showContextMenu(contextMenu, root, screen);
@@ -140,7 +140,7 @@ MouseArea {
 
     model: [
       {
-        "label": pluginApi?.tr("menu.openPanel") || "Open Calendar",
+        "label": pluginApi?.tr("menu.openPanel") || "Open Weather",
         "action": "open",
         "icon": "calendar"
       },
@@ -156,7 +156,7 @@ MouseArea {
       PanelService.closeContextMenu(screen);
 
       if (action === "open") {
-        PanelService.getPanel("clockPanel", screen)?.toggle(root);
+        pluginApi.openPanel(root.screen, root);
       } else if (action === "settings") {
         BarService.openPluginSettings(screen, pluginApi.manifest);
       }
@@ -200,9 +200,9 @@ function buildSunriseSunset() {
     var riseDate = new Date(LocationService.data.weather.daily.sunrise[0])
     var setDate  = new Date(LocationService.data.weather.daily.sunset[0])
 
-    var options = { hour: '2-digit', minute: '2-digit' };
-    var rise = riseDate.toLocaleTimeString(undefined, options);
-    var set  = setDate.toLocaleTimeString(undefined, options);
+    const timeFormat = Settings.data.location.use12hourFormat ? "hh:mm AP" : "HH:mm";
+    const rise = I18n.locale.toString(riseDate, timeFormat);
+    const set = I18n.locale.toString(setDate, timeFormat);
 
     rows.push([("Sunrise"), rise]);
     rows.push([("Sunset"), set]);
@@ -230,7 +230,7 @@ function buildTooltip() {
             break
     }
     if (allRows.length > 0) {
-      TooltipService.show(root, allRows, BarService.getTooltipDirection())
+      TooltipService.show(root, allRows, BarService.getTooltipDirection(root.screen?.name))
     }
   }
 }
