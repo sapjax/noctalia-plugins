@@ -718,7 +718,7 @@
     {
       "id": "video-wallpaper",
       "name": "Video Wallpaper",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "official": false,
       "author": "Spyridon Siarapis",
       "description": "A plugin that uses a backend renderer to play videos as your wallpaper.",
@@ -731,7 +731,7 @@
         "Fun",
         "System"
       ],
-      "lastUpdated": "2026-02-17T18:37:36+01:00"
+      "lastUpdated": "2026-02-20T12:04:37+01:00"
     },
     {
       "id": "weather-indicator",
