@@ -413,6 +413,23 @@
       "lastUpdated": "2026-01-26T23:59:29-05:00"
     },
     {
+      "id": "network-manager-vpn",
+      "name": "Network Manager VPN",
+      "version": "1.0.0",
+      "official": false,
+      "author": "nZO",
+      "description": "Connect to VPN via NetworkManager",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "3.6.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Network"
+      ],
+      "lastUpdated": "2026-02-18T11:09:59+01:00"
+    },
+    {
       "id": "niri-overview-launcher",
       "name": "Niri Overview Launcher",
       "version": "1.0.0",
