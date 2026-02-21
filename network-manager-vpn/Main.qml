@@ -98,7 +98,7 @@ QtObject {
     }
 
     function refresh() {
-        Logger.i("NetworkManagerVPN", "Refresh")
+        // Logger.i("NetworkManagerVPN", "Refresh")
 
         _listProc.running = true
     }
