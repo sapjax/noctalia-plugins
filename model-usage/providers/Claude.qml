@@ -34,18 +34,14 @@ Item {
     property string tierLabel: ""
 
     property string oauthAccessToken: ""
-    property string oauthRefreshToken: ""
     property double oauthExpiresAtMs: 0
-    property double oauthRefreshedAtMs: 0
     property string authMode: "none"
     property string subscriptionType: ""
     property string rateLimitTier: ""
     property bool hasAuthoritativeRateLimit: false
-    property bool oauthRefreshInFlight: false
-    property var oauthRefreshCallbacks: []
-    property int oauthExpirySkewMs: 60 * 1000
-    property string oauthClientId: "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
-    property var oauthTokenUrls: providerSettings?.oauthTokenUrls ?? ["https://claude.ai/v1/oauth/token", "https://platform.claude.com/v1/oauth/token"]
+
+    property double lastProbeAtMs: 0
+    property int probeMinIntervalMs: 5 * 60 * 1000
 
     property var providerSettings: ({})
 
@@ -168,38 +164,34 @@ Item {
             const data = JSON.parse(content);
             const oauth = data.claudeAiOauth ?? {};
             const fileAccessToken = oauth.accessToken ?? "";
-            const fileRefreshToken = oauth.refreshToken ?? "";
             const fileExpiresAtMs = root.normalizeExpiresAtMs(oauth.expiresAt);
-            const fileHasOAuth = (fileAccessToken !== "" || fileRefreshToken !== "");
-            const nowMs = Date.now();
+            const fileHasOAuth = fileAccessToken !== "";
 
-            const keepInMemoryToken = (fileHasOAuth && root.authMode === "oauth" && root.oauthAccessToken !== "" && ((root.oauthExpiresAtMs > (nowMs + root.oauthExpirySkewMs) && (fileExpiresAtMs <= 0 || fileExpiresAtMs < root.oauthExpiresAtMs)) || (root.oauthRefreshedAtMs > 0 && root.oauthRefreshedAtMs > (nowMs - (6 * 60 * 60 * 1000)) && (fileExpiresAtMs <= 0 || fileExpiresAtMs < (nowMs + root.oauthExpirySkewMs)))));
+            const tokenChanged = (root.oauthAccessToken !== fileAccessToken || root.oauthExpiresAtMs !== fileExpiresAtMs);
+            root.oauthAccessToken = fileAccessToken;
+            root.oauthExpiresAtMs = fileExpiresAtMs;
+            if (tokenChanged)
+                root.clearAuthoritativeRateLimits();
 
-            if (!keepInMemoryToken) {
-                const tokenChanged = (root.oauthAccessToken !== fileAccessToken || root.oauthRefreshToken !== fileRefreshToken || root.oauthExpiresAtMs !== fileExpiresAtMs);
-                root.oauthAccessToken = fileAccessToken;
-                root.oauthRefreshToken = fileRefreshToken;
-                root.oauthExpiresAtMs = fileExpiresAtMs;
-                root.oauthRefreshedAtMs = 0;
-                if (tokenChanged)
-                    root.clearAuthoritativeRateLimits();
-            }
-            root.authMode = (fileHasOAuth || keepInMemoryToken) ? "oauth" : "none";
+            root.authMode = fileHasOAuth ? "oauth" : "none";
 
             root.subscriptionType = oauth.subscriptionType ?? "";
             root.rateLimitTier = oauth.rateLimitTier ?? "";
             root.tierLabel = formatTier();
 
-            if (root.oauthAccessToken) {
+            if (root.oauthAccessToken && !root.oauthTokenExpired()) {
                 root.clearUsageStatus();
                 root.probeRateLimits();
+            } else if (!root.oauthAccessToken) {
+                root.usageStatusText = "Waiting for auth";
+                root.clearAuthoritativeRateLimits();
             } else {
-                root.setReauthRequired();
+                root.usageStatusText = "Token expired";
                 root.clearAuthoritativeRateLimits();
             }
         } catch (e) {
             Logger.e("model-usage/claude", "Failed to parse credentials.json:", e);
-            root.setReauthRequired();
+            root.usageStatusText = "Waiting for auth";
             root.clearAuthoritativeRateLimits();
         }
     }
@@ -220,12 +212,12 @@ Item {
         return (isFinite(n) && n > 0) ? n : 0;
     }
 
-    function oauthTokenExpiresSoon() {
+    function oauthTokenExpired() {
         if (!root.oauthAccessToken)
             return true;
         if (!root.oauthExpiresAtMs || !(root.oauthExpiresAtMs > 0))
             return false;
-        return root.oauthExpiresAtMs <= (Date.now() + root.oauthExpirySkewMs);
+        return root.oauthExpiresAtMs <= Date.now();
     }
 
     function clearAuthoritativeRateLimits() {
@@ -236,10 +228,6 @@ Item {
         root.secondaryRateLimitPercent = -1;
         root.secondaryRateLimitLabel = "Session (5-hour)";
         root.secondaryRateLimitResetAt = "";
-    }
-
-    function setReauthRequired() {
-        root.usageStatusText = "Reauth required";
     }
 
     function clearUsageStatus() {
@@ -288,93 +276,6 @@ Item {
         return null;
     }
 
-    function finishOAuthRefresh(success) {
-        root.oauthRefreshInFlight = false;
-        const callbacks = root.oauthRefreshCallbacks.slice();
-        root.oauthRefreshCallbacks = [];
-        for (let i = 0; i < callbacks.length; i++) {
-            try {
-                callbacks[i](success);
-            } catch (e) {}
-        }
-    }
-
-    function refreshOAuthToken(onDone) {
-        if (onDone)
-            root.oauthRefreshCallbacks.push(onDone);
-        if (root.oauthRefreshInFlight)
-            return;
-
-        if (!root.oauthRefreshToken) {
-            root.setReauthRequired();
-            root.finishOAuthRefresh(false);
-            return;
-        }
-
-        root.oauthRefreshInFlight = true;
-        const urls = root.oauthTokenUrls ?? [];
-        const body = "grant_type=refresh_token" + "&refresh_token=" + encodeURIComponent(root.oauthRefreshToken) + "&client_id=" + encodeURIComponent(root.oauthClientId);
-        let sawInvalidGrant = false;
-
-        function tryRefreshAt(index) {
-            if (index >= urls.length) {
-                if (sawInvalidGrant)
-                    root.setReauthRequired();
-                root.finishOAuthRefresh(false);
-                return;
-            }
-
-            const url = urls[index];
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", url);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState !== XMLHttpRequest.DONE)
-                    return;
-
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    try {
-                        const payload = JSON.parse(xhr.responseText ?? "{}");
-                        const newAccessToken = payload.access_token ?? "";
-                        if (newAccessToken === "") {
-                            tryRefreshAt(index + 1);
-                            return;
-                        }
-
-                        const expiresInSec = Number(payload.expires_in ?? 0);
-                        const refreshedExpiresAt = (isFinite(expiresInSec) && expiresInSec > 0) ? (Date.now() + (expiresInSec * 1000)) : root.oauthExpiresAtMs;
-
-                        root.oauthAccessToken = newAccessToken;
-                        if (payload.refresh_token)
-                            root.oauthRefreshToken = payload.refresh_token;
-                        if (refreshedExpiresAt > 0)
-                            root.oauthExpiresAtMs = refreshedExpiresAt;
-                        root.oauthRefreshedAtMs = Date.now();
-                        root.authMode = "oauth";
-
-                        root.clearUsageStatus();
-                        root.clearAuthoritativeRateLimits();
-                        root.finishOAuthRefresh(true);
-                        return;
-                    } catch (e) {
-                        tryRefreshAt(index + 1);
-                        return;
-                    }
-                }
-
-                const bodyLower = String(xhr.responseText ?? "").toLowerCase();
-                if (bodyLower.indexOf("invalid_grant") >= 0)
-                    sawInvalidGrant = true;
-
-                tryRefreshAt(index + 1);
-            };
-            xhr.send(body);
-        }
-
-        tryRefreshAt(0);
-    }
-
     function applyAuthoritativeRateLimits(weekly, weeklyReset, session, sessionReset, sourceLabel) {
         const weeklyNorm = root.normalizeUtilization(weekly);
         const sessionNorm = root.normalizeUtilization(session);
@@ -409,8 +310,7 @@ Item {
         return true;
     }
 
-    function probeOAuthUsage(allowRefresh) {
-        const canRefresh = allowRefresh !== false;
+    function probeOAuthUsage() {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", "https://api.anthropic.com/api/oauth/usage");
         xhr.setRequestHeader("Authorization", "Bearer " + root.oauthAccessToken);
@@ -435,24 +335,14 @@ Item {
                 }
             }
 
-            if ((xhr.status === 401 || xhr.status === 403) && canRefresh && root.oauthRefreshToken) {
-                root.refreshOAuthToken(function (success) {
-                    if (success)
-                        root.probeOAuthUsage(false);
-                    else {
-                        root.setReauthRequired();
-                        root.clearAuthoritativeRateLimits();
-                    }
-                });
+            if (xhr.status === 401 || xhr.status === 403) {
+                root.usageStatusText = "Token expired";
+                root.clearAuthoritativeRateLimits();
                 return;
             }
 
-            if (xhr.status === 401 || xhr.status === 403)
-                root.setReauthRequired();
-
-            const headers = xhr.getAllResponseHeaders ? xhr.getAllResponseHeaders().trim() : "";
             const body = xhr.responseText ? String(xhr.responseText).slice(0, 220) : "";
-            Logger.e("model-usage/claude", "OAuth usage probe failed (status " + xhr.status + "): " + (headers || "<none>") + (body ? " body=" + body : ""));
+            Logger.e("model-usage/claude", "OAuth usage probe failed (status " + xhr.status + ")" + (body ? " body=" + body : ""));
             root.clearAuthoritativeRateLimits();
         };
         xhr.send();
@@ -482,35 +372,23 @@ Item {
     }
 
     function probeRateLimits() {
-        if (!root.oauthAccessToken) {
-            root.setReauthRequired();
+        if (!root.oauthAccessToken || root.authMode !== "oauth") {
+            root.usageStatusText = "Waiting for auth";
             root.clearAuthoritativeRateLimits();
             return;
         }
 
-        if (root.authMode !== "oauth") {
-            root.setReauthRequired();
+        if (root.oauthTokenExpired()) {
+            root.usageStatusText = "Token expired";
             root.clearAuthoritativeRateLimits();
             return;
         }
 
-        if (root.oauthTokenExpiresSoon()) {
-            if (root.oauthRefreshToken) {
-                root.refreshOAuthToken(function (success) {
-                    if (success)
-                        root.probeOAuthUsage(false);
-                    else {
-                        root.setReauthRequired();
-                        root.clearAuthoritativeRateLimits();
-                    }
-                });
-            } else {
-                root.setReauthRequired();
-                root.clearAuthoritativeRateLimits();
-            }
+        const nowMs = Date.now();
+        if (root.lastProbeAtMs > 0 && (nowMs - root.lastProbeAtMs) < root.probeMinIntervalMs)
             return;
-        }
+        root.lastProbeAtMs = nowMs;
 
-        root.probeOAuthUsage(true);
+        root.probeOAuthUsage();
     }
 }
