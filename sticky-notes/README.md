@@ -1,6 +1,6 @@
 # 📝 Sticky Notes
 
-Sticky Notes is a lightweight sticky notes plugin for [Noctalia Shell](https://github.com/noctalia/noctalia), like OneNote's Sticky Notes but support **Markdown**.
+Sticky Notes is a lightweight sticky notes plugin for [Noctalia Shell](https://github.com/noctalia-dev/noctalia-shell), like OneNote's Sticky Notes but support **Markdown**.
 
 It allows you to quickly jot down thoughts, code snippets, and to-do lists in beautiful pastel-colored floating cards straight from your system bar.
 
