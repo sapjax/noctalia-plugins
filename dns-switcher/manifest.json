@@ -4,6 +4,10 @@
   "version": "1.2.0",
   "description": "DNS Manager with custom server support for Noctalia.",
   "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+    "tags": [
+    "Bar",
+    "Network"
+  ],
   "author": "Ronin-CK",
   "license": "MIT",
   "minNoctaliaVersion": "4.0.0",
