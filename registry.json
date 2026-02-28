@@ -711,6 +711,23 @@
       "lastUpdated": "2026-01-27T07:21:12-03:00"
     },
     {
+      "id": "sticky-notes",
+      "name": "Sticky Notes",
+      "version": "0.0.1",
+      "official": false,
+      "author": "sapjax",
+      "description": "A local quick notes plugin with Markdown support.",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "3.6.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Productivity"
+      ],
+      "lastUpdated": "2026-02-23T15:20:02+08:00"
+    },
+    {
       "id": "tailscale",
       "name": "Tailscale",
       "version": "1.1.2",
