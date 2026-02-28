@@ -355,6 +355,21 @@
       "lastUpdated": "2026-02-01T11:33:12+05:30"
     },
     {
+      "id": "mawaqit",
+      "name": "Mawaqit",
+      "version": "1.2.1",
+      "official": false,
+      "author": "User",
+      "description": "Shows prayer times and a countdown to the next prayer. Plays azan at prayer time.",
+      "minNoctaliaVersion": "4.1.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel"
+      ],
+      "lastUpdated": "2026-02-27T21:53:04+01:00"
+    },
+    {
       "id": "mini-docker",
       "name": "Mini Docker",
       "version": "2.1.2",
